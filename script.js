@@ -560,25 +560,40 @@ function renderChartKategori(data) {
   destroyChart('chart-kategori');
   const ctx = document.getElementById('chart-kategori').getContext('2d');
   charts['chart-kategori'] = new Chart(ctx, {
-    type: 'doughnut',
+    type: 'polarArea',
     data: {
       labels,
       datasets: [{
         data: values,
-        backgroundColor: ['#6F4E37','#C8964E','#E8DDCC'],
-        borderWidth: 2,
-        borderColor: '#fff'
+        backgroundColor: ['rgba(111,78,55,0.75)', 'rgba(200,150,78,0.75)', 'rgba(232,221,204,0.85)'],
+        borderColor:     ['#6F4E37', '#C8964E', '#C8A882'],
+        borderWidth: 2
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } },
+        legend: {
+          position: 'bottom',
+          labels: { font: { size: 11 }, padding: 12, color: '#374151' }
+        },
         tooltip: {
           callbacks: {
             label: ctx => ` ${ctx.label}: ${formatRp(ctx.raw)}`
           }
+        }
+      },
+      scales: {
+        r: {
+          ticks: {
+            font: { size: 10 },
+            color: '#9CA3AF',
+            backdropColor: 'transparent',
+            callback: v => shortNum(v)
+          },
+          grid: { color: '#F3EDE5' },
+          pointLabels: { display: false }
         }
       }
     }
