@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WarungKu Insight</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <script>
+    /* Tailwind custom theme config */
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            kopi:  { DEFAULT: '#6F4E37', light: '#9C7050', dark: '#4A3320' },
+            krem:  { DEFAULT: '#F5EFE6', dark: '#E8DDCC' },
+            accent: '#C8964E'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-krem min-h-screen font-sans text-gray-800">
+
+  <!-- ===================== NAVBAR ===================== -->
+  <nav class="bg-kopi shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+      <!-- Brand -->
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">☕</span>
+        <span class="text-white font-bold text-xl tracking-wide">WarungKu <span class="text-accent">Insight</span></span>
+      </div>
+
+      <!-- Nav Links -->
+      <div class="flex gap-1 sm:gap-2">
+        <button onclick="showView('kasir')"   id="nav-kasir"   class="nav-btn active">🧾 Kasir</button>
+        <button onclick="showView('dashboard')" id="nav-dashboard" class="nav-btn">📊 Dashboard</button>
+        <button onclick="showView('stok')"    id="nav-stok"    class="nav-btn">📦 Menu &amp; Stok</button>
+      </div>
+
+      <!-- Reset Data -->
+      <button onclick="resetData()" class="text-xs bg-red-700 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg transition">
+        🔄 Reset Data
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===================== VIEW: KASIR ===================== -->
+  <main id="view-kasir" class="view-container max-w-7xl mx-auto px-4 py-6">
+    <h2 class="text-2xl font-bold text-kopi mb-5">🧾 Kasir</h2>
+
+    <div class="flex flex-col lg:flex-row gap-6">
+
+      <!-- Panel Kiri: Daftar Menu -->
+      <section class="flex-1">
+        <!-- Search & Filter -->
+        <div class="flex flex-col sm:flex-row gap-3 mb-4">
+          <input id="kasir-search" type="text" placeholder="Cari menu..."
+            class="flex-1 border border-krem-dark rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-kopi text-sm shadow-sm" />
+          <div class="flex gap-2 flex-wrap">
+            <button onclick="filterKasir('Semua')" id="kf-Semua" class="filter-btn active-filter">Semua</button>
+            <button onclick="filterKasir('Minuman')" id="kf-Minuman" class="filter-btn">Minuman</button>
+            <button onclick="filterKasir('Makanan')" id="kf-Makanan" class="filter-btn">Makanan</button>
+            <button onclick="filterKasir('Snack')"   id="kf-Snack"   class="filter-btn">Snack</button>
+          </div>
+        </div>
+
+        <!-- Grid Menu -->
+        <div id="menu-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
+      </section>
+
+      <!-- Panel Kanan: Keranjang -->
+      <aside class="w-full lg:w-80 xl:w-96">
+        <div class="bg-white rounded-2xl shadow-md p-4 sticky top-24">
+          <h3 class="font-bold text-kopi text-lg mb-3 flex items-center gap-2">🛒 Keranjang</h3>
+
+          <div id="cart-items" class="space-y-2 max-h-72 overflow-y-auto pr-1 mb-4">
+            <p id="cart-empty" class="text-gray-400 text-sm text-center py-6">Belum ada item</p>
+          </div>
+
+          <!-- Divider -->
+          <div class="border-t border-krem-dark pt-3">
+            <div class="flex justify-between text-sm mb-1">
+              <span class="text-gray-500">Subtotal</span>
+              <span id="cart-subtotal" class="font-semibold">Rp 0</span>
+            </div>
+            <div class="flex justify-between text-base font-bold text-kopi mt-2">
+              <span>Total</span>
+              <span id="cart-total">Rp 0</span>
+            </div>
+          </div>
+
+          <!-- Tombol Bayar -->
+          <button id="btn-bayar" onclick="bayar()"
+            class="w-full mt-4 bg-kopi hover:bg-kopi-dark text-white font-semibold py-2.5 rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed"
+            disabled>
+            💳 Bayar Sekarang
+          </button>
+
+          <!-- Tombol Hapus Keranjang -->
+          <button onclick="clearCart()"
+            class="w-full mt-2 text-xs text-red-500 hover:text-red-700 transition">
+            Kosongkan Keranjang
+          </button>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- ===================== VIEW: DASHBOARD ===================== -->
+  <main id="view-dashboard" class="view-container hidden max-w-7xl mx-auto px-4 py-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      <h2 class="text-2xl font-bold text-kopi">📊 Dashboard</h2>
+
+      <!-- Filter -->
+      <div class="flex flex-wrap gap-3 items-center">
+        <select id="filter-kategori" onchange="updateDashboard()"
+          class="text-sm border border-krem-dark rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-kopi bg-white shadow-sm">
+          <option value="Semua">Semua Kategori</option>
+          <option value="Minuman">Minuman</option>
+          <option value="Makanan">Makanan</option>
+          <option value="Snack">Snack</option>
+        </select>
+        <select id="filter-periode" onchange="updateDashboard()"
+          class="text-sm border border-krem-dark rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-kopi bg-white shadow-sm">
+          <option value="30">30 Hari Terakhir</option>
+          <option value="7">7 Hari Terakhir</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="kpi-card">
+        <p class="text-xs text-gray-500 mb-1">Total Pendapatan</p>
+        <p id="kpi-revenue" class="text-xl font-bold text-kopi">Rp 0</p>
+      </div>
+      <div class="kpi-card">
+        <p class="text-xs text-gray-500 mb-1">Total Transaksi</p>
+        <p id="kpi-tx" class="text-xl font-bold text-kopi">0</p>
+      </div>
+      <div class="kpi-card">
+        <p class="text-xs text-gray-500 mb-1">Menu Terlaris</p>
+        <p id="kpi-terlaris" class="text-xl font-bold text-kopi">-</p>
+      </div>
+      <div class="kpi-card">
+        <p class="text-xs text-gray-500 mb-1">Rata-rata Transaksi</p>
+        <p id="kpi-avg" class="text-xl font-bold text-kopi">Rp 0</p>
+      </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <!-- Sales Trend -->
+      <div class="chart-card lg:col-span-2">
+        <h4 class="chart-title">📈 Tren Penjualan Harian</h4>
+        <div class="chart-wrap"><canvas id="chart-trend"></canvas></div>
+      </div>
+      <!-- Revenue per Kategori -->
+      <div class="chart-card">
+        <h4 class="chart-title">🍩 Pendapatan per Kategori</h4>
+        <div class="chart-wrap h-56 flex items-center justify-center">
+          <canvas id="chart-kategori"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <!-- Top 5 Menu -->
+      <div class="chart-card">
+        <h4 class="chart-title">🏆 Top 5 Menu Terlaris</h4>
+        <div class="chart-wrap"><canvas id="chart-top5"></canvas></div>
+      </div>
+      <!-- Transaksi per Hari -->
+      <div class="chart-card">
+        <h4 class="chart-title">📅 Transaksi per Hari dalam Seminggu</h4>
+        <div class="chart-wrap"><canvas id="chart-hari"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Insight Otomatis -->
+    <div class="bg-white rounded-2xl shadow-md p-5">
+      <h4 class="font-bold text-kopi text-base mb-3 flex items-center gap-2">💡 Insight Otomatis</h4>
+      <div id="insight-panel" class="space-y-2 text-sm text-gray-700"></div>
+    </div>
+  </main>
+
+  <!-- ===================== VIEW: MENU & STOK ===================== -->
+  <main id="view-stok" class="view-container hidden max-w-7xl mx-auto px-4 py-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+      <h2 class="text-2xl font-bold text-kopi">📦 Menu &amp; Stok</h2>
+      <button onclick="openAddMenuModal()"
+        class="bg-kopi hover:bg-kopi-dark text-white text-sm font-semibold px-4 py-2 rounded-xl transition shadow">
+        ➕ Tambah Menu
+      </button>
+    </div>
+
+    <!-- Tabel -->
+    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-kopi text-white">
+            <tr>
+              <th class="px-4 py-3 text-left">#</th>
+              <th class="px-4 py-3 text-left">Nama Menu</th>
+              <th class="px-4 py-3 text-left">Kategori</th>
+              <th class="px-4 py-3 text-right">Harga</th>
+              <th class="px-4 py-3 text-center">Stok</th>
+              <th class="px-4 py-3 text-center">Status</th>
+              <th class="px-4 py-3 text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="stok-table-body" class="divide-y divide-krem"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===================== MODAL: STRUK ===================== -->
+  <div id="modal-struk" class="modal-overlay hidden">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6 animate-fadeIn">
+      <div class="text-center mb-4">
+        <span class="text-4xl">🧾</span>
+        <h3 class="font-bold text-kopi text-lg mt-1">WarungKu Insight</h3>
+        <p class="text-gray-400 text-xs">Terima kasih telah berbelanja!</p>
+      </div>
+      <div id="struk-items" class="border-t border-b border-dashed border-gray-300 py-3 space-y-1 text-sm mb-3"></div>
+      <div class="flex justify-between font-bold text-kopi">
+        <span>TOTAL</span>
+        <span id="struk-total"></span>
+      </div>
+      <p id="struk-waktu" class="text-center text-xs text-gray-400 mt-2"></p>
+      <button onclick="closeStruk()"
+        class="w-full mt-4 bg-kopi hover:bg-kopi-dark text-white font-semibold py-2 rounded-xl transition">
+        Tutup
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL: TAMBAH/EDIT MENU ===================== -->
+  <div id="modal-menu" class="modal-overlay hidden">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 animate-fadeIn">
+      <h3 id="modal-menu-title" class="font-bold text-kopi text-lg mb-4">Tambah Menu</h3>
+      <form id="form-menu" onsubmit="saveMenu(event)" class="space-y-4">
+        <input type="hidden" id="menu-edit-id" />
+        <div>
+          <label class="label-form">Nama Menu</label>
+          <input id="menu-nama" type="text" required class="input-form" placeholder="cth: Kopi Susu Gula Aren" />
+        </div>
+        <div>
+          <label class="label-form">Kategori</label>
+          <select id="menu-kategori" required class="input-form">
+            <option value="">-- Pilih Kategori --</option>
+            <option>Minuman</option>
+            <option>Makanan</option>
+            <option>Snack</option>
+          </select>
+        </div>
+        <div>
+          <label class="label-form">Harga (Rp)</label>
+          <input id="menu-harga" type="number" min="1000" step="500" required class="input-form" placeholder="cth: 15000" />
+        </div>
+        <div>
+          <label class="label-form">Stok</label>
+          <input id="menu-stok" type="number" min="0" required class="input-form" placeholder="cth: 20" />
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="submit" class="flex-1 bg-kopi hover:bg-kopi-dark text-white font-semibold py-2 rounded-xl transition">
+            Simpan
+          </button>
+          <button type="button" onclick="closeMenuModal()"
+            class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 rounded-xl transition">
+            Batal
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== TOAST NOTIFICATION ===================== -->
+  <div id="toast" class="fixed bottom-6 right-6 hidden z-50">
+    <div id="toast-msg"
+      class="bg-kopi text-white text-sm px-5 py-3 rounded-xl shadow-lg transition-all duration-300">
+    </div>
+  </div>
+
+  <!-- Script utama -->
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+/* ============================================================
+   WarungKu Insight – style.css
+   Styling tambahan di luar Tailwind utility classes
+   ============================================================ */
+
+/* ---------- Global ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+  background-color: #F5EFE6;
+}
+
+/* Smooth scroll */
+html { scroll-behavior: smooth; }
+
+/* ---------- Navbar Buttons ---------- */
+.nav-btn {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: 0.6rem;
+  color: #F5EFE6;
+  background: transparent;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.nav-btn:hover { background: rgba(245,239,230,0.15); }
+.nav-btn.active { background: #F5EFE6; color: #6F4E37; }
+
+/* ---------- Filter Buttons (Kasir) ---------- */
+.filter-btn {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.9rem;
+  border-radius: 9999px;
+  border: 1.5px solid #6F4E37;
+  color: #6F4E37;
+  background: white;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.filter-btn:hover { background: #6F4E37; color: white; }
+.filter-btn.active-filter { background: #6F4E37; color: white; }
+
+/* ---------- Menu Card (Kasir) ---------- */
+.menu-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 0.85rem 0.75rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  position: relative;
+  text-align: center;
+  user-select: none;
+}
+.menu-card:hover {
+  border-color: #6F4E37;
+  box-shadow: 0 4px 14px rgba(111,78,55,0.15);
+  transform: translateY(-2px);
+}
+.menu-card.out-of-stock {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.menu-card .badge-kategori {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.04em;
+}
+.badge-Minuman { background: #DBEAFE; color: #1D4ED8; }
+.badge-Makanan { background: #D1FAE5; color: #065F46; }
+.badge-Snack   { background: #FEF3C7; color: #92400E; }
+
+.menu-card .menu-nama {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #374151;
+  line-height: 1.3;
+  margin-bottom: 0.25rem;
+}
+.menu-card .menu-harga {
+  font-size: 0.78rem;
+  color: #6F4E37;
+  font-weight: 600;
+}
+.menu-card .menu-stok {
+  font-size: 0.65rem;
+  color: #9CA3AF;
+  margin-top: 0.2rem;
+}
+
+/* ---------- Cart Item ---------- */
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #F9F5F0;
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.8rem;
+}
+.cart-item .item-nama { flex: 1; font-weight: 600; color: #374151; }
+.cart-item .qty-btn {
+  width: 1.5rem; height: 1.5rem;
+  border-radius: 50%;
+  border: 1.5px solid #6F4E37;
+  color: #6F4E37;
+  font-weight: 700;
+  font-size: 0.85rem;
+  background: white;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.cart-item .qty-btn:hover { background: #6F4E37; color: white; }
+.cart-item .qty-val { font-weight: 700; color: #374151; min-width: 1.2rem; text-align: center; }
+.cart-item .item-subtotal { font-weight: 600; color: #6F4E37; white-space: nowrap; }
+.cart-item .btn-remove {
+  color: #EF4444; cursor: pointer; font-size: 0.95rem;
+  background: none; border: none; padding: 0 0.1rem;
+  transition: opacity 0.15s;
+}
+.cart-item .btn-remove:hover { opacity: 0.7; }
+
+/* ---------- KPI Card ---------- */
+.kpi-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  border-left: 4px solid #6F4E37;
+}
+
+/* ---------- Chart Card ---------- */
+.chart-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.2rem 1.2rem 1rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+}
+.chart-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #6F4E37;
+  margin-bottom: 0.75rem;
+}
+.chart-wrap { position: relative; width: 100%; height: 220px; }
+
+/* ---------- Insight Panel ---------- */
+#insight-panel .insight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: #FFF8F0;
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border-left: 3px solid #C8964E;
+}
+#insight-panel .insight-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+#insight-panel .insight-text { font-size: 0.82rem; line-height: 1.5; color: #374151; }
+
+/* ---------- Tabel Menu & Stok ---------- */
+#stok-table-body tr {
+  transition: background 0.15s;
+}
+#stok-table-body tr:hover { background: #FFF8F0; }
+#stok-table-body td { padding: 0.75rem 1rem; vertical-align: middle; }
+
+.badge-stok-low {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  background: #FEE2E2; color: #991B1B;
+  font-size: 0.68rem; font-weight: 700;
+  padding: 0.2rem 0.55rem; border-radius: 9999px;
+}
+.badge-stok-ok {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  background: #D1FAE5; color: #065F46;
+  font-size: 0.68rem; font-weight: 700;
+  padding: 0.2rem 0.55rem; border-radius: 9999px;
+}
+
+.btn-edit {
+  font-size: 0.72rem; font-weight: 600;
+  padding: 0.3rem 0.7rem; border-radius: 0.5rem;
+  background: #EFF6FF; color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+  cursor: pointer; transition: background 0.15s;
+}
+.btn-edit:hover { background: #BFDBFE; }
+
+.btn-hapus {
+  font-size: 0.72rem; font-weight: 600;
+  padding: 0.3rem 0.7rem; border-radius: 0.5rem;
+  background: #FEF2F2; color: #DC2626;
+  border: 1px solid #FECACA;
+  cursor: pointer; transition: background 0.15s;
+}
+.btn-hapus:hover { background: #FECACA; }
+
+/* ---------- Modal Overlay ---------- */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.hidden { display: none; }
+
+/* ---------- Form Inputs ---------- */
+.label-form {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #4B5563;
+  margin-bottom: 0.3rem;
+}
+.input-form {
+  width: 100%;
+  border: 1.5px solid #E8DDCC;
+  border-radius: 0.65rem;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.875rem;
+  color: #374151;
+  background: white;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.input-form:focus {
+  border-color: #6F4E37;
+  box-shadow: 0 0 0 3px rgba(111,78,55,0.12);
+}
+
+/* ---------- Struk / Receipt ---------- */
+#struk-items .struk-row {
+  display: flex; justify-content: space-between;
+  font-size: 0.8rem; color: #374151;
+  padding: 0.15rem 0;
+}
+#struk-items .struk-row .nama { flex: 1; }
+#struk-items .struk-row .subtotal { font-weight: 600; }
+
+/* ---------- Toast ---------- */
+#toast { transition: opacity 0.3s; }
+#toast.visible { opacity: 1; }
+#toast.hidden { opacity: 0; pointer-events: none; }
+
+/* ---------- Fade-in animation (modal) ---------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-fadeIn { animation: fadeIn 0.2s ease-out; }
+
+/* ---------- Scrollbar (Webkit) ---------- */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #F5EFE6; }
+::-webkit-scrollbar-thumb { background: #C8964E; border-radius: 99px; }
+
+/* ---------- Responsive chart height ---------- */
+@media (max-width: 640px) {
+  .chart-wrap { height: 180px; }
+}
